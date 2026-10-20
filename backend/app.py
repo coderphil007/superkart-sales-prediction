@@ -27,14 +27,15 @@ def predict_sales():
     }
     input_data = pd.DataFrame([sample])
     prediction = model.predict(input_data).tolist()[0]
-    return jsonify({'Sales': round(prediction, 2)})
+    final_sales = max(0.00, round(prediction, 2))
+    return jsonify({'Sales': final_sales})
 
 @superkart_api.post('/v1/predictbatch')
 def predict_sales_batch():
     file = request.files['file']
     input_data = pd.read_csv(file)
     predictions = model.predict(input_data).tolist()
-    output_dict = {str(i): round(pred, 2) for i, pred in enumerate(predictions)}
+    output_dict = {str(i): max(0.0, round(pred, 2)) for i, pred in enumerate(predictions)}
     return jsonify(output_dict)
 
 if __name__ == '__main__':
